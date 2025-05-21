@@ -80,4 +80,4 @@ Ensure to configure the `.env` file with the required API keys and settings for 
     ```  
 
 ## License  
-This project is licensed under the MIT License.  
+This project is licensed under the MIT License.  # Profile
