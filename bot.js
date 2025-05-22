@@ -13,11 +13,11 @@ const path = require("path");
 // Import all tracker bots
 const CoinTracker = require("./trackers/coin-tracker");
 const getInfobyCA = require("./commands/message/getInfobyCA");
-// const WhaleTracker = require('../trackers/whale-tracker');
-// const NFTSniper = require('../trackers/nft-sniper');
-// const CoinSniper = require('../trackers/coin-sniper');
-// const NFTFloorScanner = require('../trackers/nft-floor-scanner');
-// const NFTMintScanner = require('../trackers/nft-mint-scanner');
+const WhaleTracker = require('../trackers/whale-tracker');
+const NFTSniper = require('../trackers/nft-sniper');
+const CoinSniper = require('../trackers/coin-sniper');
+const NFTFloorScanner = require('../trackers/nft-floor-scanner');
+const NFTMintScanner = require('../trackers/nft-mint-scanner');
 
 const client = new Client({
   intents: [
@@ -77,11 +77,11 @@ const loadCommands = (type, directory) => {
 // Initialize all trackers
 const trackers = {
   coin: new CoinTracker(),
-  // whale: new WhaleTracker(),
-  // nftSniper: new NFTSniper(),
-  // coinSniper: new CoinSniper(),
-  // floorScanner: new NFTFloorScanner(),
-  // mintScanner: new NFTMintScanner()
+  whale: new WhaleTracker(),
+  nftSniper: new NFTSniper(),
+  coinSniper: new CoinSniper(),
+  floorScanner: new NFTFloorScanner(),
+  mintScanner: new NFTMintScanner()
 };
 
 // Deploy slash commands
