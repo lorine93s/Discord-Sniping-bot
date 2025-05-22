@@ -81,3 +81,10 @@ Ensure to configure the `.env` file with the required API keys and settings for 
 
 ## License  
 This project is licensed under the MIT License.  # Profile
+
+## Contact
+Email : kaycee69braungeu@hotmail.com
+Telegram : https://t.me/@naruto9554
+
+
+
