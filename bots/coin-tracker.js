@@ -1,31 +1,58 @@
-require('dotenv').config();
+const { Client, GatewayIntentBits } = require('discord.js');
 const WebSocket = require('ws');
-const { TextChannel } = require('discord.js');
-const axios = require('axios');
+const { formatTokenAlert } = require('../utils/alerts');
 
 class CoinTracker {
-    constructor(client, channelName) {
-        this.client = client;
-        this.channelName = channelName;
+    constructor() {
+        this.active = false;
+        this.discordClient = new Client({ 
+            intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] 
+        });
+        this.targetChannelId = process.env.PUMP_FUN_NEW_TOKEN_CHANNEL_ID; // Replace with your channel ID
         this.ws = null;
         this.seenTokens = new Set();
     }
 
-    start() {
-        this.ws = new WebSocket('wss://pumpportal.fun/api/data');
+    async start() {
+        if (this.active) return;
+        this.active = true;
+        // Login Discord bot
+        await this.discordClient.login(process.env.BOT_TOKEN);
+        console.log('Discord bot logged in!');
 
+        this.connect();
+    }
+
+    stop() {
+        if (!this.active) return;
+        this.active = false;
+        if (this.ws) this.ws.close();
+        this.discordClient.destroy(); // Logout bot
+    }
+
+    connect() {
+        this.ws = new WebSocket('wss://pumpportal.fun/api/data');
+        
         this.ws.on('open', () => {
-            console.log('Connected to Pump.fun WebSocket');
             this.ws.send(JSON.stringify({ method: "subscribeNewToken" }));
         });
 
         this.ws.on('message', async (data) => {
-            try {
-                const tokenData = JSON.parse(data.toString());
+            const token = JSON.parse(data.toString());
+            if (this.seenTokens.has(token.mint)) return;
 
-                if (this.seenTokens.has(tokenData.mint)) return;
-                this.seenTokens.add(tokenData.mint);
+            this.seenTokens.add(token.mint);
 
-                console.log(`New token detected: ${tokenData.name} (${tokenData.symbol})`);
+            // Send alert to Discord channel
+            const alert = await formatTokenAlert(token);
+            const channel = await this.discordClient.channels.fetch(this.targetChannelId);
+            if(alert) channel.send(alert);
+        });
 
+        this.ws.on('close', () => {
+            if (this.active) setTimeout(() => this.connect(), 5000);
+        });
+    }
+}
 
+module.exports = CoinTracker;
