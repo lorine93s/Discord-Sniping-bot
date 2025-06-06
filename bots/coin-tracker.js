@@ -29,5 +29,4 @@ class CoinTracker {
                 console.log(`New token detected: ${tokenData.name} (${tokenData.symbol})`);
 
                 const metadata
-::contentReference[oaicite:0]{index=0}
  
