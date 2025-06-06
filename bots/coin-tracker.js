@@ -28,5 +28,4 @@ class CoinTracker {
 
                 console.log(`New token detected: ${tokenData.name} (${tokenData.symbol})`);
 
-                const metadata
- 
+
